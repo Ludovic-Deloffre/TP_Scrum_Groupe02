@@ -4,7 +4,7 @@
 # Thomas LEGRAND
 # Josué ORCIERE
 
-# Langage : Python 
+## Langage : Python 
 
 Le parseur est programmé sur un seul fichier : parser.py
 
