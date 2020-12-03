@@ -40,6 +40,16 @@ def get_conclusion(rawTxt):
 
 	return(rawTxt[a:b])
 
+def get_discussion(rawTxt):
+	a, b, c = rawTxt.find('Conclusion'), rawTxt.find('Acknowledgements'), rawTxt.find('References')
+	if (len(rawTxt[b:c]) > 1000) or (len(rawTxt[b:c]) == 0) :
+		a, b, c = rawTxt.find('CONCLUSION'), rawTxt.find('Acknowledgements'), rawTxt.find('REFERENCES')
+	if (len(rawTxt[b:c]) > 1000) or (len(rawTxt[b:c]) == 0) :
+		a, b, c = rawTxt.find('CONCLUSIONS'), rawTxt.find('Acknowledgements'), rawTxt.find('REFERENCES')
+	if (len(rawTxt[b:c]) > 1000) or (len(rawTxt[b:c]) == 0) :
+		a, b, c = rawTxt.find('Conclusions'), rawTxt.find('Acknowledgements'), rawTxt.find('References')
+	return(rawTxt[b:c])
+
 def get_developpement(rawTxt, nbMot):
 	a, b, c = rawTxt.find('Introduction'), rawTxt.find('\n2\n'), rawTxt.find('Conclusion')
 	if (len(rawTxt[b:c]) > nbMot * 0.9) or (len(rawTxt[b:c]) == 0) :
@@ -97,16 +107,16 @@ dossierTxt = input('Entrez le nom du dossier : ')
 fileList = (glob.glob(dossierTxt + "/*.txt"))
 
 for i in range(len(fileList)):
-        print(str(i)+" : "+fileList[i])
-        
+		print(str(i)+" : "+fileList[i])
+		
 txtList = list();
 yes = True
 while(yes):
-        numero = int(input("Entrez le numéro du dossier choisi, tapez -1 pour valider : "))
-        if(numero != -1 and numero < len(fileList)):
-                txtList.append(fileList[numero])
-        else:
-                yes = False
+		numero = int(input("Entrez le numéro du dossier choisi, tapez -1 pour valider : "))
+		if(numero != -1 and numero < len(fileList)):
+				txtList.append(fileList[numero])
+		else:
+				yes = False
 
 remove_create()
 
@@ -139,17 +149,17 @@ for i in range(len(txtList)) :
 		numLigne = lines.index(lookup1.upper())
 	authors = ''.join(get_author(lines,numLigne))
 	
-	fileName = f.name.split('\\')
+	fileName = f.name.split('/')
 	fileName = fileName[len(fileName)-1]
 	rawTxt = f.read()
 	nbMot = len(rawTxt)
-
 
 	abstract = get_abstract(rawTxt)
 	references = get_references(rawTxt)
 	conclusion = get_conclusion(rawTxt)
 	developpement = get_developpement(rawTxt, nbMot)
 	introduction = get_introduction(rawTxt, nbMot)
+	discussion = get_discussion(rawTxt)
 
 	os.chmod("sorties/", 0o777)
 
@@ -176,6 +186,7 @@ for i in range(len(txtList)) :
 		ET.SubElement(article, "introduction").text = introduction
 		ET.SubElement(article, "developpement").text = developpement
 		ET.SubElement(article, "conclusion").text = conclusion
+		ET.SubElement(article, "discussion").text = discussion
 		ET.SubElement(article, "biblio").text = references
 
 		tree = ET.ElementTree(article)
